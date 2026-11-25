@@ -1,0 +1,16 @@
+name: 功能建议或案例投稿
+description: 分享创作需求、使用建议或原创案例
+title: "[建议] "
+body:
+  - type: textarea
+    id: workflow
+    attributes:
+      label: 想完成的任务
+      description: 说明目前怎么做、遇到什么问题、期望增加什么能力。
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: 案例与出处（选填）
+      description: 可附中文提示词、参考图、作者和允许的用法。

@@ -1,0 +1,16 @@
+name: 问题反馈
+description: 报告工作站中可以复现的问题
+title: "[问题] "
+body:
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 怎么复现
+      description: 写出操作步骤，以及期望和实际的结果。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 测试环境
+      description: 写出版本、系统、浏览器和图像服务类型。请勿附上密钥或会话信息。

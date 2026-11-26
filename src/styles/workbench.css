@@ -52,14 +52,15 @@
 }
 #sichen-workbench .wb-quota i { width: 6px; height: 6px; background: currentColor; border-radius: 100%; }
 #sichen-workbench .wb-button {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px;
-  border: 1px solid var(--wb-line); border-radius: 8px; background: var(--wb-panel);
-  padding: 7px 11px; font-size: 13px; font-weight: 620; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px;
+  border: 1px solid var(--control-border); border-radius: 9px; background: var(--wb-panel);
+  padding: 7px 11px; font-size: 13px; font-weight: 670; white-space: nowrap;
 }
 #sichen-workbench .wb-primary { background: var(--primary-surface); color: var(--wb-action-text); border-color: transparent; }
-#sichen-workbench .wb-primary:hover { filter: brightness(1.1); }
-#sichen-workbench .wb-button:hover:not(:disabled) { border-color: var(--wb-ring); }
+#sichen-workbench .wb-button:hover:not(:disabled) { border-color: var(--wb-ring); background: var(--wb-soft); }
+#sichen-workbench .wb-button.wb-primary:hover:not(:disabled) { background: var(--primary-hover); border-color: transparent; }
 #sichen-workbench .wb-quiet-button { color: var(--wb-muted); }
+#sichen-workbench .wb-accent-button { background: var(--wb-soft); color: var(--wb-action); border-color: var(--control-active-border); }
 #sichen-workbench .wb-button[aria-pressed="true"] { background: var(--wb-soft); color: var(--wb-action); border-color: var(--wb-ring); }
 #sichen-workbench .wb-main { display: grid; grid-template-columns: minmax(0,1fr) minmax(300px, 34%); }
 #sichen-workbench .wb-canvas-area { min-width: 0; background: var(--wb-panel); }
@@ -131,14 +132,15 @@
 #sichen-workbench .wb-version[aria-pressed="true"] { background: var(--wb-soft); border-color: var(--wb-ring); color: var(--wb-action); }
 #sichen-workbench .wb-version .wb-photo { flex: none; display: block; width: 34px; height: 40px; border-radius: 4px; }
 #sichen-workbench .wb-inspector { grid-area: inspector; min-width: 0; display: flex; flex-direction: column; border-inline-start: 1px solid var(--wb-line); background: var(--wb-panel); }
-#sichen-workbench .wb-modebar { grid-area: modes; min-width: 0; padding: 13px 16px 0; border-inline-start: 1px solid var(--wb-line); background: var(--wb-panel); }
-#sichen-workbench .wb-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 11px; background: var(--wb-faint); }
+#sichen-workbench .wb-modebar { grid-area: modes; min-width: 0; padding: 15px 17px 0; border-inline-start: 1px solid var(--wb-line); background: var(--wb-panel); }
+#sichen-workbench .wb-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border: 1px solid var(--wb-line); border-radius: 13px; background: var(--wb-faint); }
 #sichen-workbench .wb-tabs button {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; min-width: 0;
-  padding: 4px 5px; border: 1px solid transparent; border-radius: 7px; background: transparent;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; min-width: 0;
+  padding: 4px 5px; border: 1px solid transparent; border-radius: 9px; background: transparent;
   color: var(--wb-muted); font-weight: 650; font-size: 14px; white-space: nowrap;
 }
-#sichen-workbench .wb-tabs button[aria-pressed="true"] { background: var(--wb-soft); border-color: var(--wb-line); color: var(--wb-action); }
+#sichen-workbench .wb-tabs button:hover { background: var(--wb-panel); color: var(--wb-action); }
+#sichen-workbench .wb-tabs button[aria-pressed="true"] { background: var(--wb-soft); border-color: var(--control-active-border); color: var(--wb-action); font-weight: 740; }
 #sichen-workbench .wb-panel { min-width: 0; padding: 13px 12px 13px; }
 #sichen-workbench .wb-chat { display: flex; flex: 1; flex-direction: column; justify-content: space-between; gap: 17px; }
 #sichen-workbench .wb-chat-body { display: grid; gap: 14px; align-content: start; min-width: 0; }
@@ -158,21 +160,30 @@
   padding: 4px 8px; font-size: 11px; white-space: nowrap;
 }
 #sichen-workbench .wb-chip:hover { background: var(--wb-soft); }
-#sichen-workbench .wb-composer { padding: 10px; border: 1px solid var(--wb-line); border-radius: 13px; background: var(--wb-paper); }
+#sichen-workbench .wb-composer { padding: 12px; border: 1px solid var(--control-border); border-radius: 15px; background: var(--wb-paper); }
 #sichen-workbench .wb-composer:focus-within { border-color: var(--wb-ring); }
 #sichen-workbench .wb-composer[data-dragging="true"] { border-color: var(--wb-ring); background: var(--wb-soft); }
-#sichen-workbench .wb-composer [data-slot="footer"] { display: block; }
+#sichen-workbench .wb-composer [data-slot="footer"] {
+  display: grid; grid-template-columns: minmax(0, 1fr); justify-content: stretch; gap: 8px;
+}
 #sichen-workbench .wb-composer textarea { display: block; width: 100%; max-height: 135px; min-height: 56px; border: 0; background: transparent; padding: 2px; resize: vertical; font-size: 13px; }
 #sichen-workbench .wb-composer textarea::placeholder { color: var(--wb-muted); }
-#sichen-workbench .wb-compose-actions,
-#sichen-workbench .wb-secondary-actions,
 #sichen-workbench .wb-compose-notes,
 #sichen-workbench .wb-attachment { display: flex; gap: 4px 6px; flex-wrap: wrap; align-items: center; justify-content: space-between; min-width: 0; }
-#sichen-workbench .wb-secondary-actions { justify-content: flex-start; }
+#sichen-workbench .wb-compose-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 6px; }
+#sichen-workbench .wb-compose-field { flex: 1 0 92px; min-width: 0; display: grid; gap: 3px; }
+#sichen-workbench .wb-compose-field > span:first-child { color: var(--wb-muted); font-size: 12px; font-weight: 650; }
+#sichen-workbench .wb-compose-field .studio-select { width: 100%; border-color: var(--control-border); padding-inline: 7px; }
+#sichen-workbench .wb-fixed-direction { display: flex; align-items: center; min-height: 42px; padding-inline: 8px; font-size: 13px; }
+#sichen-workbench .wb-composer .wb-attach-button { padding-inline: 8px; min-height: 42px; }
+#sichen-workbench .wb-composer .wb-generate { width: 100%; min-height: 47px; font-size: 15px; border-radius: 10px; }
+#sichen-workbench .wb-composer-heading { margin: 0 0 9px; }
+#sichen-workbench .wb-composer-heading h2 { font-size: 16px; font-weight: 730; text-wrap: balance; }
+#sichen-workbench .wb-composer-heading p { margin-top: 3px; color: var(--wb-muted); line-height: 1.5; font-size: 13px; }
 #sichen-workbench .wb-text-button { color: var(--wb-muted); border-color: transparent; background: transparent; padding: 5px 3px; font-size: 11px; }
 #sichen-workbench .wb-text-button :is(i,svg) { width: 14px; height: 14px; }
 #sichen-workbench .wb-compose-notes { padding-top: 7px; color: var(--wb-muted); font-size: 11px; }
-#sichen-workbench .wb-model-caption { font-size: 11px; color: var(--wb-muted); padding-top: 3px; overflow-wrap: anywhere; }
+#sichen-workbench .wb-model-caption { font-size: 11px; color: var(--wb-muted); overflow-wrap: anywhere; }
 #sichen-workbench .wb-attachment { flex-wrap: nowrap; color: var(--wb-muted); font-size: 11px; }
 #sichen-workbench .wb-attachment > span { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 #sichen-workbench .wb-layers { display: grid; gap: 16px; }
@@ -205,10 +216,11 @@
 }
 #sichen-workbench .wb-export::backdrop { background: #080a17aa; }
 #sichen-workbench .wb-export-heading, #sichen-workbench .wb-export-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-#sichen-workbench .wb-export-heading h2 { font-size: 23px; }
+#sichen-workbench .wb-export-heading h2 { font-size: 23px; text-wrap: balance; }
 #sichen-workbench .wb-close { font-size: 19px; line-height: 1; padding: 3px 9px; }
 #sichen-workbench .wb-export-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-block: 16px; }
 #sichen-workbench .wb-export-fields label { display: grid; gap: 4px; }
+#sichen-workbench .wb-export-fields select { min-height: 44px; border-color: var(--control-border); color: var(--wb-ink); }
 #sichen-workbench .wb-export-meta { font-size: 13px; padding: 9px 0; border-top: 1px solid var(--wb-line); font-variant-numeric: tabular-nums; }
 #sichen-workbench .wb-export-done { width: 100%; min-height: 44px; margin-top: 13px; }
 @media (max-width: 665px) {
@@ -280,10 +292,15 @@
 
 #sichen-workbench { --editor-height: max(570px, calc(100dvh - var(--studio-header))); }
 #sichen-workbench .wb-main {
-  grid-template-columns: minmax(0, 1fr) clamp(330px, 28vw, 460px);
+  width: min(100%, var(--studio-width));
+  margin-inline: auto;
+  grid-template-columns: minmax(0, 1fr) clamp(340px, 29%, 452px);
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas: "canvas modes" "canvas inspector";
   height: var(--editor-height);
+}
+@media (min-width: 1841px) {
+  #sichen-workbench .wb-main { box-shadow: 0 0 0 1px var(--wb-line); }
 }
 #sichen-workbench .wb-canvas-area { grid-area: canvas; display: flex; flex-direction: column; min-height: 0; }
 #sichen-workbench .wb-edit-region { display: flex; flex: 1 1 auto; min-width: 0; min-height: 0; }
@@ -315,8 +332,16 @@
 #sichen-workbench .fabric-guide-y { height: 1px; inset-inline: 0; }
 #sichen-workbench .wb-canvas-message { padding: 6px 14px; }
 #sichen-workbench .fabric-read-only .canvas-container { pointer-events: none; }
-#sichen-workbench .fabric-blank { position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; gap: 9px; color: #53645a; font-size: 14px; pointer-events: none; }
-#sichen-workbench .fabric-blank svg { width: 24px; height: 24px; }
+#sichen-workbench .fabric-blank {
+  position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; gap: 8px;
+  padding: 12px; color: var(--wb-muted); text-align: center; pointer-events: none;
+}
+#sichen-workbench .fabric-blank-icon {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border: 1px solid var(--wb-line); border-radius: 13px; background: var(--wb-soft); color: var(--wb-action);
+}
+#sichen-workbench .fabric-blank strong { color: var(--wb-ink); font-size: 14px; }
+#sichen-workbench .fabric-blank p { font-size: 12px; line-height: 1.5; text-wrap: balance; }
 #sichen-workbench .fabric-loading {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px;
   background: var(--wb-panel); color: var(--wb-muted); font-size: 14px; pointer-events: none;
@@ -501,12 +526,6 @@
 }
 #sichen-workbench .wb-current-job small { color: var(--wb-muted); font-size: 12px; }
 #sichen-workbench .wb-recent-failure { color: var(--wb-muted); font-size: 12px; padding-block-end: 7px; }
-#sichen-workbench .wb-generation-settings { color: var(--wb-muted); border-bottom: 1px solid var(--wb-line); }
-#sichen-workbench .wb-generation-settings summary { display: flex; align-items: center; gap: 7px; min-height: 40px; cursor: pointer; font-size: 13px; list-style: none; }
-#sichen-workbench .wb-generation-settings summary::-webkit-details-marker { display: none; }
-#sichen-workbench .wb-settings-summary { margin-inline-start: auto; font-size: 12px; }
-#sichen-workbench .wb-generation-settings[open] { padding-block-end: 7px; }
-#sichen-workbench .wb-generation-settings[open] .wb-setting-row { padding-inline: 4px; }
 #sichen-workbench .wb-mask-next { min-height: 30px; margin-inline-start: auto; color: var(--wb-action); }
 #sichen-workbench .wb-canvas-area { scroll-margin-top: calc(var(--studio-header) + 4px); }
 @media (pointer: coarse) {
@@ -529,4 +548,7 @@
 #sichen-workbench .wb-subject-next { display: none; }
 @media (max-width: 820px) {
   #sichen-workbench .wb-subject-next { display: inline-flex; }
+}
+@media (pointer: coarse) {
+  #sichen-workbench .wb-composer .wb-attach-button { min-height: 44px; }
 }

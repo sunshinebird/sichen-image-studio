@@ -33,6 +33,12 @@ const loadingBackground = shallowRef(Boolean(props.asset))
 const hasPaintedImage = shallowRef(false)
 const split = shallowRef(50)
 const bounds = shallowRef({ width: 1, height: 1 })
+const previewView = computed(() => {
+  const renderedEdge = Math.max(bounds.value.width, bounds.value.height) * Math.min(window.devicePixelRatio || 1, 2)
+  const pictures = props.comparing ? [props.asset, props.original] : [props.asset]
+  const hasLargePicture = pictures.some(asset => asset && Math.max(asset.width, asset.height) > 1280)
+  return renderedEdge > 1280 && hasLargePicture ? 'detail' : 'preview'
+})
 const guides = shallowRef<{ x?: number; y?: number }>({})
 const entries = computed(() => props.interactiveOverlay ? [] : editorObjects(props.layer, props.ratio))
 const region = computed(() => props.asset ? frameImage(props.asset.width, props.asset.height, props.aspect, props.layer.background).visible
@@ -122,13 +128,14 @@ async function renderBackground() {
   loadingBackground.value = Boolean(props.asset)
   const instance = canvas
   const height = boardHeight(props.aspect)
+  const view = previewView.value
   let items: SceneObject[] = []
   try {
-    items = await backgroundObjects({ layer: props.layer, ratio: props.ratio, aspect: props.aspect, tone: props.tone, asset: props.asset }, current.signal, 'preview')
+    items = await backgroundObjects({ layer: props.layer, ratio: props.ratio, aspect: props.aspect, tone: props.tone, asset: props.asset }, current.signal, view)
     let clip: Rect | undefined
     let compare: FabricImage | undefined
     if (props.comparing && props.original) {
-      const image = await FabricImage.fromURL(imageView(props.original.url, 'preview'), { crossOrigin: 'anonymous', signal: current.signal })
+      const image = await FabricImage.fromURL(imageView(props.original.url, view), { crossOrigin: 'anonymous', signal: current.signal })
       clip = new Rect({
         originX: 'left', originY: 'top', left: 0, top: 0, width: BOARD_WIDTH * split.value / 100,
         height, strokeWidth: 0, absolutePositioned: true,
@@ -412,7 +419,8 @@ onMounted(() => {
   observer.observe(viewport.value)
   fit()
   renderObjects()
-  void renderBackground()
+  watch([() => props.asset?.url, () => props.original?.url, () => props.comparing, () => props.tone, () => props.aspect, previewView],
+    () => void renderBackground(), { immediate: true, flush: 'post' })
 })
 
 function maskDown(event: PointerEvent) {
@@ -455,7 +463,6 @@ function maskMove(event: PointerEvent) {
   if (width >= 0.02 && height >= 0.02) emit('selection', { x: Math.min(x0, x1), y: Math.min(y0, y1), width, height })
 }
 
-watch(() => [props.asset?.url, props.original?.url, props.comparing, props.tone, props.aspect], () => void renderBackground())
 watch(() => props.layer.background, updateFraming)
 watch(() => [props.aspect, props.zoom, props.asset?.width], fit)
 watch(() => [props.layer, props.aspect, props.ratio, props.editing, props.interactiveOverlay], () => {
@@ -488,7 +495,11 @@ onBeforeUnmount(() => {
         <div v-if="loadingBackground" class="fabric-loading" :class="{ 'fabric-loading-small': hasPaintedImage }" role="status">
           <span class="wb-spinner" aria-hidden="true"></span>{{ comparing ? '正在载入对比…' : '正在载入画布…' }}
         </div>
-        <div v-if="canvasPlain" class="fabric-blank"><Image :size="24" /><span>创作结果会显示在这里</span></div>
+        <div v-if="canvasPlain" class="fabric-blank">
+          <span class="fabric-blank-icon"><Image :size="21" aria-hidden="true" /></span>
+          <strong>{{ editing ? '空白画布' : '预览区' }}</strong>
+          <p>{{ editing ? '添加文字、形状或图片开始排版。' : '填写描述生成图片，或打开一张图继续编辑。' }}</p>
+        </div>
         <button v-if="asset && !editing && !interactiveOverlay && !masking && !comparing && layer.title && layer.visible" class="fabric-title-shortcut"
           aria-label="编辑画布标题" type="button" :style="{ left: layer.x + '%', top: layer.y + '%', height: (layer.textScale * 12) + '%' }"
           @click="emit('edit')"></button>

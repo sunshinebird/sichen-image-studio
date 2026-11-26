@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
-import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Copy, Maximize2, Minimize2, X } from 'lucide-vue-next'
+import { ArrowRight, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Copy, Maximize2, Minimize2, WandSparkles, X } from 'lucide-vue-next'
 import UButton from '@nuxt/ui/components/Button.vue'
 import { expandPrompt, researchLinks, type Case } from '../studio/catalog'
 import type { StudioDocument } from '../studio/document'
@@ -176,8 +176,8 @@ async function copy() {
       </div>
 
       <footer class="case-actions">
-        <button v-if="canEditArtwork" type="button" class="sa-button case-edit-art" @click="selectCase('edit-current')">改这张图</button>
-        <UButton type="button" class="sa-button sa-primary" @click="selectCase()">{{ action }} <ArrowUpRight :size="18" aria-hidden="true" /></UButton>
+        <button v-if="canEditArtwork" type="button" class="sa-button case-edit-art" @click="selectCase('edit-current')"><WandSparkles :size="16" aria-hidden="true" /> 改这张图</button>
+        <UButton type="button" class="sa-button sa-primary" @click="selectCase()">{{ action }} <ArrowRight :size="18" aria-hidden="true" /></UButton>
       </footer>
     </div>
   </dialog>

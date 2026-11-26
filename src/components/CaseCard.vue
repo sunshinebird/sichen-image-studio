@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ArrowUpRight, PanelsTopLeft } from 'lucide-vue-next'
+import { ArrowRight, PanelsTopLeft } from 'lucide-vue-next'
 import type { Case } from '../studio/catalog'
 import { galleryCardSizes, gallerySources } from '../studio/imageView'
 
@@ -17,14 +17,14 @@ const action = computed(() => item.pages ? '编辑模板' : item.start === 'uplo
         alt="" :width="item.width" :height="item.height" :loading="eager ? 'eager' : 'lazy'" decoding="async">
       <span v-if="item.id === 'coffee'" class="sa-card-letter sa-coffee-letter">午后<br>咖啡节</span>
       <span v-if="item.id === 'deck'" class="sa-card-letter sa-deck-letter">向新<br>而行</span>
-      <span v-if="item.pages" class="sa-page-tag"><PanelsTopLeft :size="13" /> 可编辑演示</span>
+      <span v-if="item.pages" class="sa-page-tag"><PanelsTopLeft :size="13" aria-hidden="true" /> 可编辑演示</span>
       <span v-else-if="item.presentation === 'slide-reference'" class="sa-page-tag">演示设计</span>
       <span v-else-if="item.start === 'edit'" class="sa-page-tag">含改图前后</span>
     </button>
     <div class="sa-case-meta">
       <button class="sa-plain case-name" type="button" :title="item.name" @click="emit('details')">{{ item.name }}</button>
       <button type="button" class="sa-remix" :aria-label="item.name + '，' + action" @click="emit('choose')">
-        {{ action }} <ArrowUpRight :size="14" />
+        {{ action }} <ArrowRight :size="14" aria-hidden="true" />
       </button>
       <p>{{ item.industry }}</p>
     </div>

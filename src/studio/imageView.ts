@@ -9,9 +9,9 @@ export function imageView(url: string, view: ImageView) {
     : url
 }
 
-export const galleryCardSizes = '(max-width: 355px) 91vw, (max-width: 720px) 46vw, (max-width: 1120px) 30vw, (max-width: 1900px) 23vw, 440px'
-export const galleryCoverSizes = '(max-width: 800px) 94vw, (max-width: 1900px) 53vw, 1000px'
-export const detailSizes = '(max-width: 760px) 94vw, (max-width: 1680px) 65vw, 1230px'
+export const galleryCardSizes = '(max-width: 355px) 91vw, (max-width: 720px) 46vw, (max-width: 1120px) 30vw, (max-width: 1664px) 23vw, (max-width: 2190px) 380px, min(442px, 17.3vw)'
+export const galleryCoverSizes = '(max-width: 800px) 94vw, (max-width: 1664px) 47vw, (max-width: 2190px) 780px, min(920px, 36vw)'
+export const detailSizes = '(max-width: 760px) calc(100vw - 28px), (max-width: 1608px) 68vw, (max-width: 2137px) 1075px, min(1395px, calc(73vw - 486px))'
 
 export function gallerySources(url: string, width: number, cover = false) {
   if (width <= 384) return undefined

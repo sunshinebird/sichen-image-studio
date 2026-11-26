@@ -53,14 +53,14 @@ function shade(height: number) {
   })
 }
 
-export async function backgroundObjects(scene: Scene, signal?: AbortSignal, view: 'preview' | 'original' = 'original'): Promise<SceneObject[]> {
+export async function backgroundObjects(scene: Scene, signal?: AbortSignal, view: 'preview' | 'detail' | 'original' = 'original'): Promise<SceneObject[]> {
   const height = boardHeight(scene.aspect)
   const background = scene.layer.background
   const items: SceneObject[] = [new Rect({
     ...locked, left: 0, top: 0, width: BOARD_WIDTH, height, strokeWidth: 0, fill: paperColor(background),
   })]
   if (scene.asset) {
-    const url = view === 'preview' ? imageView(scene.asset.url, 'preview') : scene.asset.url
+    const url = view === 'original' ? scene.asset.url : imageView(scene.asset.url, view)
     const image = await FabricImage.fromURL(url, { crossOrigin: 'anonymous', signal })
     items.push(layoutImage(image, scene.aspect, background))
     adjustImage(image, background)

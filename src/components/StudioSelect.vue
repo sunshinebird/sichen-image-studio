@@ -47,14 +47,14 @@ function select(value: unknown) {
   align-items: center;
   gap: 7px;
   padding: 0 11px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-border);
   border-radius: 10px;
   background: var(--panel);
   color: var(--ink);
   font-size: 13px;
   white-space: nowrap;
 }
-.studio-select:hover, .studio-select[data-state="open"] { border-color: var(--ring); }
+.studio-select:hover, .studio-select[data-state="open"] { border-color: var(--ring); background: var(--soft); }
 .studio-select-icon { display: inline-flex; color: var(--muted); }
 .studio-select-value { min-width: 0; text-overflow: ellipsis; overflow: hidden; }
 .studio-select-chevron { margin-inline-start: auto; color: var(--muted); flex: none; }

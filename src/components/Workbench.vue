@@ -394,10 +394,10 @@ watch([aspect, () => layer.value.background?.fit, () => layer.value.background?.
           </div>
           <div class="wb-canvas-actions">
             <span class="wb-canvas-label">{{ frameLabel }}</span>
-            <button v-if="!picture && !changingNonCover" type="button" class="wb-button wb-quiet-button" :disabled="mediaBusy"
-              @click="chooseMedia(undefined, true)"><ImagePlus :size="15" /> {{ mediaBusy ? '正在打开…' : '打开图片' }}</button>
-            <button v-if="!changingNonCover && canAdjustFrame" type="button" class="wb-button wb-quiet-button" @click="openBackground">
-              <SlidersHorizontal :size="15" aria-hidden="true" /> 取景与调色
+            <button v-if="!picture && !changingNonCover" type="button" class="wb-button wb-accent-button" :disabled="mediaBusy"
+              @click="chooseMedia(undefined, true)"><ImagePlus :size="15" aria-hidden="true" /> {{ mediaBusy ? '正在打开…' : '打开图片' }}</button>
+            <button v-if="!changingNonCover && canAdjustFrame" type="button" class="wb-button wb-accent-button" @click="openBackground">
+              <SlidersHorizontal :size="15" aria-hidden="true" /> 裁切与调色
             </button>
             <button v-if="canCompare && mode === 'chat'" type="button" class="wb-button wb-quiet-button" :aria-pressed="comparing" @click="toggleCompare"><Columns2 :size="16" /> 对比</button>
           </div>
@@ -445,7 +445,7 @@ watch([aspect, () => layer.value.background?.fit, () => layer.value.background?.
             :aria-label="'查看原图，' + picture.width + ' × ' + picture.height + ' 像素'">原图 {{ picture.width }} × {{ picture.height }}</a>
           <span v-else>{{ ratioLabels[doc.ratio] }}</span>
           <span v-if="mode === 'layers'" class="wb-layer-hint">{{ smartNotice && past.length ? smartNotice : layerHelp }}</span>
-          <button v-if="selectionReady" type="button" class="wb-button wb-quiet-button wb-mask-next" @click="focusPrompt">填写改图指令</button>
+          <button v-if="selectionReady" type="button" class="wb-button wb-accent-button wb-mask-next" @click="focusPrompt">填写改图指令</button>
           <button v-if="mode === 'smart' && tool === 'subject' && currentCandidate" type="button"
             class="wb-button wb-quiet-button wb-mask-next wb-subject-next" @click="showSubjectActions">使用这个选区</button>
           <span v-if="subjectFocus" class="wb-selection-chip">主体选区 <button type="button" aria-label="清除主体选区" @click="clearMask">×</button></span>
@@ -465,11 +465,11 @@ watch([aspect, () => layer.value.background?.fit, () => layer.value.background?.
           <div class="wb-history-heading"><h2>版本</h2><span>{{ versions.length + (original ? 1 : 0) }} 个</span></div>
           <div class="wb-versions" role="group" aria-label="作品版本">
             <button v-if="original" type="button" class="wb-version" :aria-pressed="!active" @click="chooseVersion()">
-              <img :src="imageView(original.url, 'thumb')" alt="" loading="lazy" decoding="async">{{ doc.imported ? '导入原图' : '案例原图' }}
+              <img :src="imageView(original.url, 'thumb')" width="34" height="40" alt="" loading="lazy" decoding="async">{{ doc.imported ? '导入原图' : '案例原图' }}
             </button>
             <button v-for="(version, index) in versions" :key="version.id" type="button" class="wb-version"
               :aria-pressed="active?.id === version.id" @click="chooseVersion(version.id)">
-              <img v-if="version.asset" :src="imageView(version.asset.url, 'thumb')" alt="" loading="lazy" decoding="async">版本 {{ index + 1 }}<small v-if="version.demo">示例</small>
+              <img v-if="version.asset" :src="imageView(version.asset.url, 'thumb')" width="34" height="40" alt="" loading="lazy" decoding="async">版本 {{ index + 1 }}<small v-if="version.demo">示例</small>
             </button>
           </div>
         </div>

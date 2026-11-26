@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, nextTick, shallowRef, useTemplateRef, watch } from 'vue'
-import { ArrowLeft, ArrowRight, Download, FolderOpen, Github, ImagePlus, Moon, Pencil, Sun, X } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, Download, FolderOpen, Github, ImagePlus, Moon, Pencil, Sparkles, Sun, X } from 'lucide-vue-next'
 import UButton from '@nuxt/ui/components/Button.vue'
 import Gallery from './components/Gallery.vue'
 import AccountDialog from './components/AccountDialog.vue'
@@ -53,19 +53,21 @@ const appearanceLabel = computed(() => appearance.value === 'dark' ? '切换到�
 watch(appearance, value => {
   document.documentElement.classList.toggle('dark', value === 'dark')
   document.documentElement.classList.toggle('light', value === 'light')
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', value === 'dark' ? '#0b0e19' : '#f8f8f5')
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', value === 'dark' ? '#0b0e19' : '#f8f8fa')
 }, { immediate: true })
 function toggleAppearance() {
   appearance.value = appearance.value === 'dark' ? 'light' : 'dark'
   try { localStorage.setItem(appearanceKey, appearance.value) } catch { /* storage may be unavailable */ }
 }
 const editor = computed(() => route.value === 'editor')
+const freeQuota = computed(() => session.value?.quota.available ? session.value.quota.remaining : 0)
+const shownQuota = computed(() => session.value?.sub2.linked ? freeQuota.value + (session.value.quota.memberRemaining ?? 0) : freeQuota.value)
 const displayQuota = computed(() => {
   if (session.value?.provider.demo) return '本地演示'
   if (!session.value) return '游客试用'
-  const free = session.value.quota.available ? session.value.quota.remaining : 0
-  return session.value.sub2.linked ? '可用 ' + (free + (session.value.quota.memberRemaining ?? 0)) + ' 张' : '今日免费 ' + free + ' 张'
+  return (session.value.sub2.linked ? '可用 ' : '今日免费 ') + shownQuota.value + ' 张'
 })
+const compactQuota = computed(() => !session.value || session.value.provider.demo ? '额度' : shownQuota.value + ' 张')
 const canExport = computed(() => Boolean(image.value || doc.value.slides?.length ||
   canvasLayers(doc.value.layer, doc.value.ratio).some(item => item.visible && (item.type !== 'text' || item.text)),
 ))
@@ -126,15 +128,16 @@ async function importPicture(file: File) {
       </div>
       <div class="top-actions">
         <button class="top-quota" type="button" aria-haspopup="dialog" aria-label="查看创作额度" @click="askAccount">
-          <i aria-hidden="true"></i>{{ displayQuota }}
+          <Sparkles :size="14" aria-hidden="true" />
+          <span class="top-quota-full">{{ displayQuota }}</span><span class="top-quota-short">{{ compactQuota }}</span>
         </button>
         <button class="base-button work-list-button" type="button" aria-label="我的作品" aria-haspopup="dialog" title="我的作品" @click="openWorks">
           <FolderOpen :size="16" aria-hidden="true" /><span>我的作品</span>
         </button>
         <button v-if="editor" class="base-button new-button" type="button" aria-label="新建" title="新建" @click="fresh"><ImagePlus :size="15" aria-hidden="true" /> <span>新建</span></button>
-        <UButton v-if="editor" class="base-button primary" type="button" :disabled="!canExport" @click="exportSignal++"><Download :size="15" aria-hidden="true" /> 导出</UButton>
+        <UButton v-if="editor" class="base-button primary" type="button" :disabled="!canExport" @click="exportSignal++"><Download :size="15" aria-hidden="true" /> 导出作品</UButton>
         <button v-else-if="session?.sub2.enabled" class="base-button account-login" type="button" @click="askAccount">{{ session.sub2.linked ? '账户' : '登录' }}</button>
-        <UButton class="base-button theme-button" type="button" variant="ghost" :aria-label="appearanceLabel" :title="appearanceLabel"
+        <UButton class="base-button theme-button" type="button" variant="outline" :aria-label="appearanceLabel" :title="appearanceLabel"
           @click="toggleAppearance">
           <Sun v-if="appearance === 'dark'" :size="17" aria-hidden="true" />
           <Moon v-else :size="17" aria-hidden="true" />
@@ -143,7 +146,9 @@ async function importPicture(file: File) {
     </header>
 
     <KeepAlive>
-      <Gallery v-if="!editor" :importing="importing" :import-error="importError" @choose="openCase" @create="begin" @import="importPicture" />
+      <Gallery v-if="!editor" :importing="importing" :import-error="importError"
+        :daily-limit="session && !session.provider.demo && session.provider.ready ? session.quota.limit : undefined"
+        @choose="openCase" @create="begin" @import="importPicture" />
     </KeepAlive>
     <footer v-if="!editor && session?.github" class="studio-open-source">
       <a :href="session.github" target="_blank" rel="noopener noreferrer"><Github :size="15" aria-hidden="true" />GitHub 开源项目</a>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, shallowRef, useTemplateRef, watch } from 'vue'
-import { ArrowUp, ChevronDown, CircleAlert, Clock3, GitBranch, ImagePlus, Paintbrush, Scan, SlidersHorizontal, Sparkles } from 'lucide-vue-next'
+import { ArrowUp, CircleAlert, Clock3, GitBranch, ImagePlus, Paintbrush, Scan, Sparkles } from 'lucide-vue-next'
 import UButton from '@nuxt/ui/components/Button.vue'
 import UChatPrompt from '@nuxt/ui/components/ChatPrompt.vue'
 import StudioSelect from './StudioSelect.vue'
@@ -49,8 +49,6 @@ const currentStatus = computed(() => {
   return ''
 })
 const lastJob = computed(() => props.timeline.at(-1))
-const ratioName = computed(() => props.fixedRatio ? '横版' : directions.find(item => item.value === props.ratio)?.label)
-const styleName = computed(() => styles.find(item => item.value === style.value)?.label)
 const sourceName = computed(() => props.picture && useCurrent.value ? props.versionLabel : '')
 const recentStages: Record<Job['status'], string> = {
   succeeded: '已生成', running: '正在生成', uncertain: '等待确认', failed: '未生成',
@@ -163,7 +161,7 @@ watch(() => [props.timeline.length, props.timeline.at(-1)?.status], async () => 
           <div v-if="job.asset" class="wb-turn-result">
             <button type="button" class="wb-result-thumb" :aria-label="'查看版本 ' + versionNumbers.get(job.id)"
               :aria-pressed="active?.id === job.id" @click="emit('version', job.id)">
-              <img :src="imageView(job.asset.url, 'thumb')" alt="" loading="lazy" decoding="async">
+              <img :src="imageView(job.asset.url, 'thumb')" width="34" height="34" alt="" loading="lazy" decoding="async">
               <span>版本 {{ versionNumbers.get(job.id) }}</span>
             </button>
             <span>原图 {{ job.asset.width }} × {{ job.asset.height }}</span>
@@ -200,6 +198,10 @@ watch(() => [props.timeline.length, props.timeline.at(-1)?.status], async () => 
         <span v-if="uploadingReferences" role="status" class="wb-help">正在保存参考图…</span>
       </div>
       <p v-if="referenceError" class="wb-error" role="alert">{{ referenceError }}</p>
+      <div class="wb-composer-heading">
+        <h2>{{ sourceName ? '描述要改的地方' : '描述想生成的图片' }}</h2>
+        <p v-if="!timeline.length">{{ sourceName ? '也可以框选或涂抹，只改局部。' : '写清主体、风格和构图，或带上参考图。' }}</p>
+      </div>
       <input ref="reference-input" type="file" name="reference-image" accept="image/png,image/jpeg,image/webp"
         :multiple="references.length === 0" hidden @change="attach">
       <UChatPrompt id="studio-instructions" ref="composer" v-model="prompt" aria-label="创作描述"
@@ -209,43 +211,33 @@ watch(() => [props.timeline.length, props.timeline.at(-1)?.status], async () => 
         :placeholder="sourceName ? '例如，把背景换成浅米色…' : '例如，一张清晰的柠檬苏打商品图…'"
         @paste="pasteReference" @dragover.prevent @drop.prevent="dropReference" @submit="send">
         <template #footer>
-          <div class="wb-compose-actions">
-            <div class="wb-secondary-actions">
-              <UButton class="wb-button wb-text-button" variant="ghost" type="button" :disabled="uploadingReferences || references.length >= 2"
-                @click="referenceInput?.click()"><ImagePlus :size="15" aria-hidden="true" /> 参考图<template v-if="references.length"> {{ references.length }}/2</template></UButton>
+          <div class="wb-compose-actions" role="group" aria-label="生成设置">
+            <div class="wb-compose-field">
+              <span aria-hidden="true">方向</span>
+              <span v-if="fixedRatio" class="wb-fixed-direction">横版</span>
+              <StudioSelect v-else :model-value="ratio" :items="directions" label="生成方向" @update:model-value="emit('ratio', $event)" />
             </div>
-            <UButton v-if="exhausted" class="wb-button wb-primary" type="button" @click="emit('account')">获取更多额度</UButton>
-            <UButton v-else class="wb-button wb-primary" type="submit" :disabled="locked" @click="!prompt.trim() && showMissingPrompt()">
-              <ArrowUp v-if="sourceName" :size="15" aria-hidden="true" /><Sparkles v-else :size="15" aria-hidden="true" />
-              {{ checking && !submitting ? '确认中…' : isCreating ? '生成中…' : sourceName ? '生成改图版' : '生成图片' }}
-            </UButton>
+            <div v-if="!session?.provider.demo" class="wb-compose-field">
+              <span aria-hidden="true">风格</span>
+              <StudioSelect v-model="style" :items="styles" label="画面风格" />
+            </div>
+            <button class="wb-button wb-attach-button" type="button" :disabled="uploadingReferences || references.length >= 2"
+              @click="referenceInput?.click()"><ImagePlus :size="15" aria-hidden="true" /> {{ references.length ? '参考图 ' + references.length + '/2' : '添加参考图' }}</button>
           </div>
+          <p v-if="validation || latestError" class="wb-error wb-composer-error" role="alert">{{ validation || latestError }}</p>
+          <UButton v-if="exhausted" class="wb-button wb-primary wb-generate" type="button" @click="emit('account')">获取更多额度</UButton>
+          <UButton v-else class="wb-button wb-primary wb-generate" type="submit" :disabled="locked">
+            <ArrowUp v-if="sourceName" :size="17" aria-hidden="true" /><Sparkles v-else :size="17" aria-hidden="true" />
+            {{ checking && !submitting ? '确认中…' : isCreating ? '生成中…' : sourceName ? '应用修改并生成' : '生成图片' }}
+          </UButton>
         </template>
       </UChatPrompt>
-      <details class="wb-generation-settings">
-        <summary><SlidersHorizontal :size="15" aria-hidden="true" /><span>生成设置</span>
-          <span class="wb-settings-summary">{{ ratioName }}<template v-if="!session?.provider.demo"> · {{ styleName }}</template></span>
-          <ChevronDown :size="15" aria-hidden="true" />
-        </summary>
-        <div class="wb-setting-row">
-          <span>生成方向</span>
-          <span v-if="fixedRatio" class="wb-setting-value">横版</span>
-          <StudioSelect v-else :model-value="ratio" :items="directions" label="生成方向" @update:model-value="emit('ratio', $event)" />
-        </div>
-        <div v-if="!session?.provider.demo" class="wb-setting-row">
-          <span>画面风格</span>
-          <StudioSelect v-model="style" :items="styles" label="画面风格" />
-        </div>
-        <p v-if="session?.generation?.model" class="wb-model-caption">
-          {{ session.provider.demo ? '演示模型' : '模型' }} {{ session.generation.model }}
-        </p>
-      </details>
       <div class="wb-compose-notes">
         <span>{{ maskMode === 'brush' ? '涂抹要改的区域' : maskMode === 'rect' ? '在画布上拖动框选区域' : session?.provider.demo ? '演示不占正式试用次数' : '出图成功后计 1 张' }}</span>
-        <button v-if="maskMode && hasSelection" type="button" class="wb-text-button" @click="emit('clearMask')">清除选区</button>
+        <button v-if="maskMode && hasSelection" type="button" class="wb-button wb-text-button" @click="emit('clearMask')">清除选区</button>
+        <span v-else-if="session?.generation?.model && !session.provider.demo" class="wb-model-caption" translate="no">{{ session.generation.model }}</span>
       </div>
       <p v-if="session?.provider.ready === false" class="wb-help">图像服务尚未配置。</p>
-      <p v-if="validation || latestError" class="wb-error" role="alert">{{ validation || latestError }}</p>
     </div>
   </section>
 </template>

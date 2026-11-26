@@ -1,7 +1,7 @@
 .case-dialog {
   --case-pane: clamp(300px, 25vw, 420px);
-  width: min(calc(100% - 64px), 1720px);
-  height: min(calc(100dvh - 52px), 1040px);
+  width: min(calc(100% - 48px), clamp(1560px, 73vw, 1880px));
+  height: min(calc(100dvh - 52px), 1160px);
   max-width: none;
   max-height: none;
   margin: auto;
@@ -122,6 +122,7 @@
 }
 .case-image-switch button[aria-pressed="true"] {
   background: var(--sa-active);
+  border-color: var(--control-active-border);
   color: var(--sa-accent);
   font-weight: 650;
 }
@@ -222,3 +223,7 @@
 }
 
 .case-actions .case-edit-art { flex: none; }
+#sichen-atelier .case-actions .case-edit-art {
+  color: var(--sa-accent); background: var(--sa-active); border-color: var(--control-active-border);
+}
+#sichen-atelier .case-actions .case-edit-art:hover { border-color: var(--sa-accent); }

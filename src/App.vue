@@ -116,8 +116,6 @@ async function importPicture(file: File) {
       <nav v-if="!editor" class="topnav" aria-label="工作站">
         <a href="/" aria-current="page" @click.left.exact.prevent="studio.navigate('gallery')">灵感库</a>
         <a href="/studio" @click.left.exact.prevent="studio.navigate('editor')">工作台</a>
-        <button v-if="contributionRepository" class="topnav-contribute" type="button" aria-haspopup="dialog"
-          aria-controls="studio-open-source-dialog" @click="openSource?.open()">开源共建</button>
       </nav>
       <div v-else class="top-project">
         <a href="/" class="back-link" @click.left.exact.prevent="studio.navigate('gallery')"><ArrowLeft :size="15" aria-hidden="true" /> <span>案例</span></a>
@@ -147,6 +145,12 @@ async function importPicture(file: File) {
           <Sun v-if="appearance === 'dark'" :size="17" aria-hidden="true" />
           <Moon v-else :size="17" aria-hidden="true" />
         </UButton>
+        <div v-if="contributionRepository" class="top-contribution">
+          <button class="base-button top-contribution-button" type="button" aria-label="开源共建" title="开源共建"
+            aria-haspopup="dialog" aria-controls="studio-open-source-dialog" @click="openSource?.open()">
+            <Github :size="17" aria-hidden="true" /><span>开源共建</span>
+          </button>
+        </div>
       </div>
     </header>
 

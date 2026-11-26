@@ -77,6 +77,7 @@ button:disabled { cursor: default; opacity: .48; }
   background: color-mix(in srgb, var(--panel) 94%, transparent);
 }
 .studio-app-editor .topbar { grid-template-columns: auto minmax(0, 1fr) auto; }
+.studio-app-with-contributions .topbar { grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr); }
 .brand {
   display: inline-flex;
   align-items: center;
@@ -107,15 +108,15 @@ button:disabled { cursor: default; opacity: .48; }
 .brand-symbol i:nth-child(4) { transform: rotate(180deg); }
 .topnav, .top-actions, .top-project { display: flex; gap: 8px; align-items: center; min-width: 0; }
 .topnav { gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-raised); }
-.topnav :is(a, button) {
+.topnav a {
   display: flex; align-items: center; justify-content: center;
   min-height: 34px; padding: 5px 13px; border: 0; border-radius: 7px; background: transparent;
   color: var(--muted); text-decoration: none; font-size: 14px; white-space: nowrap;
 }
 .topnav a[aria-current] { color: var(--action); background: var(--panel); box-shadow: var(--studio-shadow); font-weight: 700; }
-.topnav .topnav-contribute { color: var(--action); font-weight: 650; }
-.topnav :is(a, button):hover { color: var(--action); background: var(--soft); }
+.topnav a:hover { color: var(--action); background: var(--soft); }
 .top-actions { justify-self: end; }
+.top-contribution { display: flex; flex: none; margin-inline-start: 2px; padding-inline-start: 8px; border-inline-start: 1px solid var(--line); }
 .top-project { border-inline-start: 1px solid var(--line); padding-inline-start: 12px; }
 .top-project h1 { min-width: 0; margin: 0; font-size: 16px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 .back-link {
@@ -143,6 +144,7 @@ button:disabled { cursor: default; opacity: .48; }
 .base-button.secondary:hover:not(:disabled) { border-color: var(--ring); }
 .icon-button { min-width: 42px; padding: 4px 9px; }
 .theme-button { padding-inline: 9px; flex: none; }
+.top-contribution-button { min-width: 44px; min-height: 44px; padding-inline: 9px; background: transparent; }
 .studio-modal {
   width: min(100% - 28px, 460px); max-height: calc(100dvh - 26px); padding: 0;
   background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 20px;
@@ -166,7 +168,7 @@ button:disabled { cursor: default; opacity: .48; }
     padding: max(7px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 7px max(12px, env(safe-area-inset-left));
   }
   .topnav { justify-self: center; padding: 3px; }
-  .topnav :is(a, button) { padding-inline: 8px; font-size: 13px; }
+  .topnav a { padding-inline: 8px; font-size: 13px; }
   .top-actions { gap: 5px; }
   .top-quota { padding-inline: 6px; font-size: 11px; }
   .top-actions .base-button { padding-inline: 8px; }
@@ -184,11 +186,11 @@ button:disabled { cursor: default; opacity: .48; }
 }
 @media (max-width: 350px) {
   .topbar { gap: 5px; padding-inline: 9px; }
-  .topnav :is(a, button) { padding-inline: 6px; }
+  .topnav a { padding-inline: 6px; }
   .studio-app-editor .new-button span { display: none; }
 }
 @media (pointer: coarse) {
-  .base-button, .topnav :is(a, button), .icon-button { min-height: 44px; }
+  .base-button, .topnav a, .icon-button { min-height: 44px; }
 }
 
 .studio-modal .account-balance { font-variant-numeric: tabular-nums; }
@@ -240,6 +242,10 @@ button:disabled { cursor: default; opacity: .48; }
   .studio-app:not(.studio-app-editor) .top-quota { min-width: 38px; justify-content: center; }
 }
 
+@media (max-width: 600px) {
+  .top-contribution { margin-inline-start: 0; padding-inline-start: 4px; }
+  .top-contribution-button span { display: none; }
+}
 @media (max-width: 520px) {
   .studio-app-with-contributions { --studio-header: 104px; }
   .studio-app-with-contributions .topbar { grid-template-columns: auto minmax(0, 1fr); gap: 4px 8px; }

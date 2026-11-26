@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Download, FolderOpen, Github, ImagePlus, Moon, P
 import UButton from '@nuxt/ui/components/Button.vue'
 import Gallery from './components/Gallery.vue'
 import AccountDialog from './components/AccountDialog.vue'
+import OpenSourceDialog from './components/OpenSourceDialog.vue'
 import { useStudio } from './studio/useStudio'
 import { canvasLayers } from './studio/useCanvasLayers'
 import type { Case, Ratio } from './studio/catalog'
@@ -18,6 +19,7 @@ const {
 } = studio
 const exportSignal = shallowRef(0)
 const account = useTemplateRef<InstanceType<typeof AccountDialog>>('account')
+const openSource = useTemplateRef<InstanceType<typeof OpenSourceDialog>>('open-source')
 const worksDialog = useTemplateRef<HTMLDialogElement>('works-dialog')
 const importing = shallowRef(false)
 const nameField = useTemplateRef<HTMLInputElement>('work-name')
@@ -60,6 +62,7 @@ function toggleAppearance() {
   try { localStorage.setItem(appearanceKey, appearance.value) } catch { /* storage may be unavailable */ }
 }
 const editor = computed(() => route.value === 'editor')
+const contributionRepository = computed(() => editor.value ? null : session.value?.github)
 const freeQuota = computed(() => session.value?.quota.available ? session.value.quota.remaining : 0)
 const shownQuota = computed(() => session.value?.sub2.linked ? freeQuota.value + (session.value.quota.memberRemaining ?? 0) : freeQuota.value)
 const displayQuota = computed(() => {
@@ -103,7 +106,7 @@ async function importPicture(file: File) {
 </script>
 
 <template>
-  <div class="studio-app" :class="{ 'studio-app-editor': editor }">
+  <div class="studio-app" :class="{ 'studio-app-editor': editor, 'studio-app-with-contributions': contributionRepository }">
     <a class="skip-link" :href="editor ? '#sichen-workbench' : '#sichen-atelier'">跳到主要内容</a>
     <header class="topbar">
       <a href="/" class="brand plain" aria-label="思辰生图工作站首页" @click.left.exact.prevent="studio.navigate('gallery')">
@@ -113,6 +116,8 @@ async function importPicture(file: File) {
       <nav v-if="!editor" class="topnav" aria-label="工作站">
         <a href="/" aria-current="page" @click.left.exact.prevent="studio.navigate('gallery')">灵感库</a>
         <a href="/studio" @click.left.exact.prevent="studio.navigate('editor')">工作台</a>
+        <button v-if="contributionRepository" class="topnav-contribute" type="button" aria-haspopup="dialog"
+          aria-controls="studio-open-source-dialog" @click="openSource?.open()">开源共建</button>
       </nav>
       <div v-else class="top-project">
         <a href="/" class="back-link" @click.left.exact.prevent="studio.navigate('gallery')"><ArrowLeft :size="15" aria-hidden="true" /> <span>案例</span></a>
@@ -150,9 +155,12 @@ async function importPicture(file: File) {
         :daily-limit="session && !session.provider.demo && session.provider.ready ? session.quota.limit : undefined"
         @choose="openCase" @create="begin" @import="importPicture" />
     </KeepAlive>
-    <footer v-if="!editor && session?.github" class="studio-open-source">
-      <a :href="session.github" target="_blank" rel="noopener noreferrer"><Github :size="15" aria-hidden="true" />GitHub 开源项目</a>
-      <a :href="session.github + '/issues'" target="_blank" rel="noopener noreferrer">反馈建议</a>
+    <footer v-if="contributionRepository" class="studio-open-source">
+      <button class="studio-footer-link" type="button" aria-haspopup="dialog" aria-controls="studio-open-source-dialog"
+        @click="openSource?.open()">开源共建</button>
+      <a class="studio-footer-link" :href="contributionRepository" target="_blank" rel="noopener noreferrer">
+        <Github :size="15" aria-hidden="true" />GitHub 仓库
+      </a>
     </footer>
     <Workbench v-if="editor" :key="doc.id"
       v-model:document="doc"
@@ -168,6 +176,7 @@ async function importPicture(file: File) {
     />
 
     <Teleport to="body">
+      <OpenSourceDialog v-if="contributionRepository" ref="open-source" :repository="contributionRepository" />
       <AccountDialog ref="account" :session="session" :page="route" :refresh="studio.refreshSession" :save="studio.flushDraft" @update="studio.applyAccount" />
       <dialog ref="works-dialog" class="studio-modal studio-works-modal" aria-labelledby="works-heading" @click.self="worksDialog?.close()">
         <section class="studio-modal-content">
@@ -194,6 +203,14 @@ async function importPicture(file: File) {
 </template>
 
 <style scoped>
-.studio-open-source { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; padding: 18px 12px 28px; font-size: .85rem; color: var(--muted); }
-.studio-open-source a { display: inline-flex; align-items: center; gap: 6px; }
+.studio-open-source {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 12px;
+  padding: 12px var(--studio-edge) 20px; border-top: 1px solid var(--line);
+}
+.studio-footer-link {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding-inline: 8px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--muted);
+  font-size: .875rem; text-decoration: none;
+}
+.studio-footer-link:hover { background: var(--soft); color: var(--action); }
 </style>

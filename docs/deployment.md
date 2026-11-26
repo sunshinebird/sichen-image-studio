@@ -12,7 +12,7 @@
 | `STUDIO_IMAGE_MODEL` | 图像服务提供的模型 ID。 |
 | `STUDIO_GUEST_DAILY` / `STUDIO_GLOBAL_DAILY` | 每日访客及全站免费图张上限。 |
 | `STUDIO_GUEST_IP_DAILY` | 一个来源地址共用的免费次数上限。 |
-| `STUDIO_GITHUB_URL` | 首页页脚显示的公开 GitHub 仓库。 |
+| `STUDIO_GITHUB_URL` | 开源共建入口使用的公开 GitHub 仓库。留空时隐藏入口。使用自己的仓库时，启用 Issues 并保留贡献指南和 Issue 模板。 |
 
 HTTPS 代理后可设 `STUDIO_SECURE_COOKIE=1`。若开启 `STUDIO_TRUST_LOOPBACK_PROXY=1`，反向代理须覆盖客户端同名头部，再写入可信的 `X-Real-IP`。一个数据目录由一个工作站进程使用。
 

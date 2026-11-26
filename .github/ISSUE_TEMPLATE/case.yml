@@ -1,0 +1,30 @@
+name: 案例与提示词投稿
+description: 分享一张原创图片和可复用的中文提示词
+title: "[案例] "
+body:
+  - type: textarea
+    id: artwork
+    attributes:
+      label: 成品图片与用途
+      description: 拖入图片或贴上公开链接，简单说说它适合什么场景。
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: 中文提示词
+      description: 贴上可复用的提示词。如果用了参考图，可附素材或说明要上传什么。
+    validations:
+      required: true
+  - type: input
+    id: settings
+    attributes:
+      label: 生图设置（选填）
+      description: 可以写下模型、画幅和其他值得保留的设置。
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: 作品授权
+      options:
+        - label: 我拥有分享这些材料的权利，并同意工作站在标明作者的情况下展示案例和提示词。
+          required: true
